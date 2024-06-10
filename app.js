@@ -21,11 +21,13 @@ const alienInvaders = [
     30, 31, 32, 33, 34, 35, 36, 37, 38, 39
 ];
 
+const totalAliens = alienInvaders.length;
+
 function draw() {
     for (let i = 0; i < alienInvaders.length; i++) {
         if (!aliensRemoved.includes(alienInvaders[i])) {
             const invader = document.createElement('img');
-            invader.src = 'images/william-robinson-gun-alien-firing-animation.gif'; 
+            invader.src = 'images/william-robinson-gun-alien-firing-animation.gif';
             invader.classList.add('invader');
             invader.style.width = '100%';
             invader.style.height = '100%';
@@ -47,7 +49,7 @@ function remove() {
 
 function drawShooter() {
     const shooter = document.createElement('img');
-    shooter.src = 'images/png-clipart-elon-musk-tesla-motors-investor-the-boring-company-spacex-others-face-head.png'; // Replace with your shooter image path
+    shooter.src = 'images/png-clipart-elon-musk-tesla-motors-investor-the-boring-company-spacex-others-face-head.png'; 
     shooter.classList.add('shooter');
     shooter.style.width = '130%';
     shooter.style.height = '130%';
@@ -109,7 +111,8 @@ function moveInvaders() {
         clearInterval(invadersId);
     }
 
-    if (aliensRemoved.length === alienInvaders.length) {
+    // Check for win condition
+    if (aliensRemoved.length === totalAliens) {
         resultDisplay.innerHTML = "YOU WIN";
         clearInterval(invadersId);
     }
@@ -147,10 +150,16 @@ function shoot(e) {
                 const alienRemoved = alienInvaders.indexOf(currentLaserIndex);
                 if (alienRemoved !== -1) {
                     aliensRemoved.push(alienInvaders[alienRemoved]);
-                    alienInvaders.splice(alienRemoved, 1); 
+                    alienInvaders.splice(alienRemoved, 1); // Remove the alien from the array
                 }
                 results++;
                 resultDisplay.innerHTML = results;
+
+                // Check win condition after alien is removed
+                if (aliensRemoved.length === totalAliens) {
+                    resultDisplay.innerHTML = "YOU WIN";
+                    clearInterval(invadersId);
+                }
             }
         } else {
             clearInterval(laserId);

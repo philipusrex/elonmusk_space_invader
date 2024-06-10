@@ -3,14 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Invaders</title>
+    <title>Welcome to Elon Musk Space Invader</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
     <link rel="stylesheet" href="style.css">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            font-family: 'Press Start 2P', sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        .welcome-text {
+            margin: 20px;
+            font-size: 2em;
+        }
+        .elon-image {
+            width: 600px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .play-button {
+            font-family: 'Press Start 2P', sans-serif;
+            font-size: 2em;
+            padding: 10px 20px;
+            background-color: #ffcc00;
+            border: none;
+            cursor: pointer;
+        }
+        .play-button:hover {
+            background-color: #ffaa00;
+        }
+    </style>
 </head>
 <body>
-    <h1 class="results">0</h1>
-    <div class="grid">
+    <div class="container">
+        <img src="images/png-clipart-elon-musk-tesla-motors-investor-the-boring-company-spacex-others-face-head.png" alt="Elon Musk" class="elon-image">
+        <div class="welcome-text">Welcome to Elon Musk Space Invader <br></br>forked by Osian, 5RA Repton Prep</div>
+        <button class="play-button" onclick="redirectToGame()">Let's Play</button>
+        <audio id="funnySound" src="sounds/elon.mp3" autoplay></audio>
     </div>
-    <script src="app.js"></script>
+    <script>
+        function redirectToGame() {
+            window.location.href = 'game.html';
+        }
+
+        window.onload = function() {
+            var audio = document.getElementById('funnySound');
+            audio.play().catch(error => {
+                console.log("Audio playback failed:", error);
+            });
+        };
+    </script>
 </body>
 </html>
