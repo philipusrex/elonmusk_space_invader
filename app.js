@@ -35,8 +35,6 @@ function draw() {
     }
 }
 
-draw();
-
 function remove() {
     for (let i = 0; i < alienInvaders.length; i++) {
         if (!aliensRemoved.includes(alienInvaders[i])) {
@@ -47,22 +45,27 @@ function remove() {
     }
 }
 
-// Draw the shooter image
 function drawShooter() {
     const shooter = document.createElement('img');
     shooter.src = 'images/png-clipart-elon-musk-tesla-motors-investor-the-boring-company-spacex-others-face-head.png'; // Replace with your shooter image path
     shooter.classList.add('shooter');
-    shooter.style.width = '100%';
-    shooter.style.height = '100%';
+    shooter.style.width = '130%';
+    shooter.style.height = '130%';
     shooter.style.objectFit = 'cover';
     squares[currentShooterIndex].appendChild(shooter);
 }
 
-// Initial drawing of the shooter
+function removeShooter() {
+    const shooterImg = squares[currentShooterIndex].querySelector('.shooter');
+    if (shooterImg) {
+        squares[currentShooterIndex].removeChild(shooterImg);
+    }
+}
+
 drawShooter();
 
 function moveShooter(e) {
-    squares[currentShooterIndex].innerHTML = ''; // Clear the current shooter image
+    removeShooter();
     switch (e.key) {
         case "ArrowLeft":
             if (currentShooterIndex % width !== 0) currentShooterIndex -= 1;
@@ -71,30 +74,32 @@ function moveShooter(e) {
             if (currentShooterIndex % width < width - 1) currentShooterIndex += 1;
             break;
     }
-    drawShooter(); // Draw the shooter at the new position
+    drawShooter();
 }
 
 document.addEventListener("keydown", moveShooter);
 
 function moveInvaders() {
-    const leftEdge = alienInvaders[0] % width === 0;
-    const rightEdge = alienInvaders[alienInvaders.length - 1] % width === width - 1;
+    // Check if any invader is at the left edge
+    const leftEdge = alienInvaders.some(invader => invader % width === 0);
+    // Check if any invader is at the right edge
+    const rightEdge = alienInvaders.some(invader => invader % width === width - 1);
     remove();
 
     if (rightEdge && isGoingRight) {
         for (let i = 0; i < alienInvaders.length; i++) {
-            alienInvaders[i] += width + 1;
-            direction = -1;
-            isGoingRight = false;
+            alienInvaders[i] += width;
         }
+        direction = -1; // Change direction to left
+        isGoingRight = false;
     }
 
     if (leftEdge && !isGoingRight) {
         for (let i = 0; i < alienInvaders.length; i++) {
-            alienInvaders[i] += width - 1;
-            direction = 1;
-            isGoingRight = true;
+            alienInvaders[i] += width;
         }
+        direction = 1; // Change direction to right
+        isGoingRight = true;
     }
 
     for (let i = 0; i < alienInvaders.length; i++) {
@@ -103,11 +108,13 @@ function moveInvaders() {
 
     draw();
 
+    // Check for game over
     if (squares[currentShooterIndex].querySelector(".invader")) {
         resultDisplay.innerHTML = "GAME OVER";
         clearInterval(invadersId);
     }
 
+    // Check for win
     if (aliensRemoved.length === alienInvaders.length) {
         resultDisplay.innerHTML = "YOU WIN";
         clearInterval(invadersId);
@@ -154,5 +161,4 @@ function shoot(e) {
 
 document.addEventListener('keydown', shoot);
 
-// Initial drawing of the invaders
 draw();
