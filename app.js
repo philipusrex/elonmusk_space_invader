@@ -25,7 +25,7 @@ function draw() {
     for (let i = 0; i < alienInvaders.length; i++) {
         if (!aliensRemoved.includes(alienInvaders[i])) {
             const invader = document.createElement('img');
-            invader.src = 'images/william-robinson-gun-alien-firing-animation.gif'; // Replace with your alien image path
+            invader.src = 'images/william-robinson-gun-alien-firing-animation.gif'; 
             invader.classList.add('invader');
             invader.style.width = '100%';
             invader.style.height = '100%';
@@ -80,25 +80,21 @@ function moveShooter(e) {
 document.addEventListener("keydown", moveShooter);
 
 function moveInvaders() {
-    // Check if any invader is at the left edge
-    const leftEdge = alienInvaders.some(invader => invader % width === 0);
-    // Check if any invader is at the right edge
-    const rightEdge = alienInvaders.some(invader => invader % width === width - 1);
+    const leftEdge = alienInvaders[0] % width === 0;
+    const rightEdge = alienInvaders[alienInvaders.length - 1] % width === width - 1;
     remove();
 
     if (rightEdge && isGoingRight) {
         for (let i = 0; i < alienInvaders.length; i++) {
-            alienInvaders[i] += width;
+            alienInvaders[i] += width - 1; 
         }
-        direction = -1; // Change direction to left
+        direction = -1;
         isGoingRight = false;
-    }
-
-    if (leftEdge && !isGoingRight) {
+    } else if (leftEdge && !isGoingRight) {
         for (let i = 0; i < alienInvaders.length; i++) {
-            alienInvaders[i] += width;
+            alienInvaders[i] += width + 1; 
         }
-        direction = 1; // Change direction to right
+        direction = 1;
         isGoingRight = true;
     }
 
@@ -108,13 +104,11 @@ function moveInvaders() {
 
     draw();
 
-    // Check for game over
     if (squares[currentShooterIndex].querySelector(".invader")) {
         resultDisplay.innerHTML = "GAME OVER";
         clearInterval(invadersId);
     }
 
-    // Check for win
     if (aliensRemoved.length === alienInvaders.length) {
         resultDisplay.innerHTML = "YOU WIN";
         clearInterval(invadersId);
@@ -128,13 +122,22 @@ function shoot(e) {
     let currentLaserIndex = currentShooterIndex;
 
     function moveLaser() {
-        squares[currentLaserIndex].classList.remove("laser");
+        const laserImg = squares[currentLaserIndex].querySelector('.laser-img');
+        if (laserImg) {
+            squares[currentLaserIndex].removeChild(laserImg);
+        }
         currentLaserIndex -= width;
         if (currentLaserIndex >= 0) {
-            squares[currentLaserIndex].classList.add("laser");
+            const laser = document.createElement('img');
+            laser.src = 'images/life-style-spacex-starship-pack.png'; 
+            laser.classList.add('laser-img');
+            laser.style.width = '100%';
+            laser.style.height = '100%';
+            laser.style.objectFit = 'cover';
+            squares[currentLaserIndex].appendChild(laser);
 
             if (squares[currentLaserIndex].querySelector(".invader")) {
-                squares[currentLaserIndex].classList.remove("laser");
+                squares[currentLaserIndex].removeChild(laser);
                 squares[currentLaserIndex].querySelector(".invader").remove();
                 squares[currentLaserIndex].classList.add("boom");
 
@@ -144,7 +147,7 @@ function shoot(e) {
                 const alienRemoved = alienInvaders.indexOf(currentLaserIndex);
                 if (alienRemoved !== -1) {
                     aliensRemoved.push(alienInvaders[alienRemoved]);
-                    alienInvaders.splice(alienRemoved, 1); // Remove the alien from the array
+                    alienInvaders.splice(alienRemoved, 1); 
                 }
                 results++;
                 resultDisplay.innerHTML = results;
